@@ -9,8 +9,11 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log("Incoming request body:", req.body);
     const { name, description, price } = req.body;
     const userId = req.user?.id;
+
+    console.log("Parsed data:", { name, description, price, userId });
 
     if (!userId) {
       res.status(401).json({ message: "User not authenticated" });
@@ -18,9 +21,11 @@ export const createProduct = async (
     }
 
     let imagePath: string | null = null;
+    console.log("Image upload path:", imagePath); 
     try {
       imagePath = await handleUpload(req, res);
     } catch (err) {
+      console.log("Upload error details:", err);
       res
         .status(400)
         .json({ message: err instanceof Error ? err.message : "Upload error" });
@@ -29,6 +34,7 @@ export const createProduct = async (
 
     const nameError = validateProductInput.name(name);
     if (nameError) {
+      console.log("Name validation error:", nameError); 
       res.status(400).json({ message: nameError });
       return;
     }

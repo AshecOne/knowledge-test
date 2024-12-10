@@ -59,6 +59,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!validateForm()) return;
 
     try {
+      console.log("Form data being sent:", formData);
       const submitData = createFormData();
       await handleProductSubmission(submitData);
 
@@ -67,6 +68,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       );
       router.push("/products");
     } catch (err) {
+      console.error("Submission error:", err);
       showToast.error(
         (err as Error).message ||
           `Failed to ${isEdit ? "update" : "create"} product`
