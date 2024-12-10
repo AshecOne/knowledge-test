@@ -13,7 +13,6 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Proses upload dulu
     let imagePath: string | null = null;
     try {
       imagePath = await handleUpload(req, res);
@@ -24,25 +23,23 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Setelah upload, baru akses req.body karena data form baru tersedia
     const { name, description, price } = req.body;
-    console.log("Data after upload:", { name, description, price });
 
-    // Validasi setelah dapat data
-    if (!name || name.trim().length < 3) {
-      res
-        .status(400)
-        .json({ message: "Name must be at least 3 characters long" });
+    const nameError = validateProductInput.name(name);
+    if (nameError) {
+      res.status(400).json({ message: nameError });
       return;
     }
 
-    if (!description) {
-      res.status(400).json({ message: "Description is required" });
+    const descError = validateProductInput.description(description);
+    if (descError) {
+      res.status(400).json({ message: descError });
       return;
     }
 
-    if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
-      res.status(400).json({ message: "Price must be a positive number" });
+    const priceError = validateProductInput.price(price);
+    if (priceError) {
+      res.status(400).json({ message: priceError });
       return;
     }
 
@@ -59,7 +56,6 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       product: productToResponse(product),
     });
   } catch (error) {
-    console.error("Create product error:", error);
     res.status(500).json({ message: "Error creating product" });
   }
 };
@@ -70,7 +66,6 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, description, price } = req.body;
     const userId = req.user?.id;
 
     if (!userId) {
@@ -88,11 +83,15 @@ export const updateProduct = async (
     try {
       imagePath = await handleUpload(req, res);
     } catch (err) {
-      res
-        .status(400)
-        .json({ message: err instanceof Error ? err.message : "Upload error" });
+      res.status(400).json({
+        message: err instanceof Error ? err.message : "Upload error",
+      });
       return;
     }
+
+    const { name, description, price } = req.body;
+
+    const updateData: Partial<typeof product> = {};
 
     if (name) {
       const nameError = validateProductInput.name(name);
@@ -100,6 +99,16 @@ export const updateProduct = async (
         res.status(400).json({ message: nameError });
         return;
       }
+      updateData.name = name.trim();
+    }
+
+    if (description) {
+      const descError = validateProductInput.description(description);
+      if (descError) {
+        res.status(400).json({ message: descError });
+        return;
+      }
+      updateData.description = description.trim();
     }
 
     if (price) {
@@ -108,13 +117,12 @@ export const updateProduct = async (
         res.status(400).json({ message: priceError });
         return;
       }
+      updateData.price = parseFloat(price);
     }
 
-    const updateData: Partial<typeof product> = {};
-    if (name) updateData.name = name.trim();
-    if (description) updateData.description = description.trim();
-    if (price) updateData.price = parseFloat(price);
-    if (imagePath) updateData.image = imagePath;
+    if (imagePath) {
+      updateData.image = imagePath;
+    }
 
     await product.update(updateData);
 
@@ -123,7 +131,6 @@ export const updateProduct = async (
       product: productToResponse(product),
     });
   } catch (error) {
-    console.error("Update product error:", error);
     res.status(500).json({ message: "Error updating product" });
   }
 };
@@ -146,7 +153,6 @@ export const getProducts = async (
 
     res.json(products.map(productToResponse));
   } catch (error) {
-    console.error("Fetch products error:", error);
     res.status(500).json({ message: "Error fetching products" });
   }
 };
@@ -173,7 +179,6 @@ export const deleteProduct = async (
     await product.destroy();
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
-    console.error("Delete product error:", error);
     res.status(500).json({ message: "Error deleting product" });
   }
 };

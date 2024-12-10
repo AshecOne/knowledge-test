@@ -44,7 +44,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       user: userToResponse(user),
     });
   } catch (error) {
-    console.error("Registration error:", error);
     res.status(500).json({ message: "Error registering user" });
   }
 };
@@ -71,7 +70,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       token,
     });
   } catch (error) {
-    console.error("Login error:", error);
     res.status(500).json({ message: "Error logging in" });
   }
 };
@@ -89,7 +87,6 @@ export const getProfile = async (
 
     res.json(userToResponse(user));
   } catch (error) {
-    console.error("Profile error:", error);
     res.status(500).json({ message: "Error fetching profile" });
   }
 };
@@ -140,7 +137,6 @@ export const updateProfile = async (
       user: userToResponse(user),
     });
   } catch (error) {
-    console.error("Update profile error:", error);
     res.status(500).json({ message: "Error updating profile" });
   }
 };

@@ -59,13 +59,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!validateForm()) return;
 
     try {
-      console.log("Form values before submission:", {
-        name: formData.name,
-        description: formData.description,
-        price: formData.price,
-        image: formData.image ? "Image exists" : "No image",
-      });
-
       const submitData = new FormData();
  
       submitData.append("name", formData.name.trim());
@@ -81,7 +74,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       );
       router.push("/products");
     } catch (err) {
-      console.error("Submission error:", err);
       showToast.error(
         err instanceof Error ? err.message : "Failed to process product"
       );
@@ -94,17 +86,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       return false;
     }
     return true;
-  };
-
-  const createFormData = () => {
-    const submitData = new FormData();
-    submitData.append("name", formData.name);
-    submitData.append("description", formData.description);
-    submitData.append("price", formData.price.toString());
-    if (formData.image && typeof formData.image !== "string") {
-      submitData.append("image", formData.image);
-    }
-    return submitData;
   };
 
   const handleProductSubmission = async (submitData: FormData) => {

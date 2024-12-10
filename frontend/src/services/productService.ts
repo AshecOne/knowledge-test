@@ -23,8 +23,6 @@ export const productService = {
       body: formData,
     });
 
-    console.log("Response status:", response.status);
-
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to create product");

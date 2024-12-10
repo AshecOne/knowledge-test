@@ -103,7 +103,6 @@ export default function RegisterForm() {
               placeholder="Password"
             />
 
-            {/* Gender Radio Group */}
             <div>
               <label className="text-sm font-medium text-gray-700">
                 Gender
