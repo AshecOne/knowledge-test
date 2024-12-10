@@ -129,7 +129,7 @@ export default function ProductsPage() {
       {!loading && products.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
-            You haven't added any products yet.
+            You haven&apos;t added any products yet.
           </p>
           <button
             onClick={() => router.push("/products/create")}
