@@ -2,8 +2,11 @@ import app from "./config/app";
 import sequelize from "./config/database";
 import authRoutes from "./routes/authRoutes";
 import productRoutes from "./routes/productRoutes";
+import express from "express";
+import path from "path";
 
 const PORT = process.env.PORT || 3001;
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 
