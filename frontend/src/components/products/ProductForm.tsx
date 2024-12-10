@@ -59,10 +59,23 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!validateForm()) return;
 
     try {
-      console.log("Form data being sent:", formData);
-      const submitData = createFormData();
-      await handleProductSubmission(submitData);
+      console.log("Form values before submission:", {
+        name: formData.name,
+        description: formData.description,
+        price: formData.price,
+        image: formData.image ? "Image exists" : "No image",
+      });
 
+      const submitData = new FormData();
+ 
+      submitData.append("name", formData.name.trim());
+      submitData.append("description", formData.description.trim());
+      submitData.append("price", formData.price.toString());
+      if (formData.image && typeof formData.image !== "string") {
+        submitData.append("image", formData.image);
+      }
+
+      await handleProductSubmission(submitData);
       showToast.success(
         `Product ${isEdit ? "updated" : "created"} successfully!`
       );
@@ -70,8 +83,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     } catch (err) {
       console.error("Submission error:", err);
       showToast.error(
-        (err as Error).message ||
-          `Failed to ${isEdit ? "update" : "create"} product`
+        err instanceof Error ? err.message : "Failed to process product"
       );
     }
   };

@@ -6,13 +6,18 @@ export const handleUpload = (
   res: Response
 ): Promise<string | null> => {
   return new Promise((resolve, reject) => {
-    console.log("Starting file upload...");
+    console.log("Starting upload process, body:", req.body);
+
     upload.single("image")(req, res, (err) => {
       if (err) {
-        console.log("Upload error:", err);
+        console.error("Upload error:", err);
         reject(err);
+        return;
       }
-      console.log("File upload result:", req.file);
+
+      console.log("Upload completed, body after upload:", req.body);
+      console.log("File details:", req.file);
+
       resolve(req.file ? `/uploads/${req.file.filename}` : null);
     });
   });

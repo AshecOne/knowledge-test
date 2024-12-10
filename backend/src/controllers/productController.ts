@@ -10,10 +10,10 @@ export const createProduct = async (
 ): Promise<void> => {
   try {
     console.log("Incoming request body:", req.body);
-    const { name, description, price } = req.body;
+    let { name, description, price } = req.body;
     const userId = req.user?.id;
 
-    console.log("Parsed data:", { name, description, price, userId });
+    console.log("Extracted data:", { name, description, price, userId });
 
     if (!userId) {
       res.status(401).json({ message: "User not authenticated" });
@@ -21,33 +21,33 @@ export const createProduct = async (
     }
 
     let imagePath: string | null = null;
-    console.log("Image upload path:", imagePath); 
     try {
       imagePath = await handleUpload(req, res);
+      console.log("Image upload result:", imagePath);
     } catch (err) {
-      console.log("Upload error details:", err);
+      console.error("Upload error:", err);
+      res.status(400).json({
+        message: err instanceof Error ? err.message : "Upload error",
+      });
+      return;
+    }
+
+    // Validasi setelah memastikan nilai ada
+    if (!name || name.trim().length < 3) {
+      console.log("Name validation failed:", name);
       res
         .status(400)
-        .json({ message: err instanceof Error ? err.message : "Upload error" });
+        .json({ message: "Name must be at least 3 characters long" });
       return;
     }
 
-    const nameError = validateProductInput.name(name);
-    if (nameError) {
-      console.log("Name validation error:", nameError); 
-      res.status(400).json({ message: nameError });
+    if (!description) {
+      res.status(400).json({ message: "Description is required" });
       return;
     }
 
-    const descError = validateProductInput.description(description);
-    if (descError) {
-      res.status(400).json({ message: descError });
-      return;
-    }
-
-    const priceError = validateProductInput.price(price);
-    if (priceError) {
-      res.status(400).json({ message: priceError });
+    if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
+      res.status(400).json({ message: "Price must be a positive number" });
       return;
     }
 
@@ -58,6 +58,8 @@ export const createProduct = async (
       image: imagePath,
       userId,
     });
+
+    console.log("Product created:", product);
 
     res.status(201).json({
       message: "Product created successfully",
