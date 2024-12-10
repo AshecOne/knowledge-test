@@ -4,37 +4,32 @@ import { productToResponse } from "../types/productTypes";
 import { validateProductInput } from "../validators/productValidator";
 import { handleUpload } from "../helpers/uploadHandler";
 
-export const createProduct = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const createProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("Incoming request body:", req.body);
-    let { name, description, price } = req.body;
     const userId = req.user?.id;
-
-    console.log("Extracted data:", { name, description, price, userId });
 
     if (!userId) {
       res.status(401).json({ message: "User not authenticated" });
       return;
     }
 
+    // Proses upload dulu
     let imagePath: string | null = null;
     try {
       imagePath = await handleUpload(req, res);
-      console.log("Image upload result:", imagePath);
     } catch (err) {
-      console.error("Upload error:", err);
       res.status(400).json({
         message: err instanceof Error ? err.message : "Upload error",
       });
       return;
     }
 
-    // Validasi setelah memastikan nilai ada
+    // Setelah upload, baru akses req.body karena data form baru tersedia
+    const { name, description, price } = req.body;
+    console.log("Data after upload:", { name, description, price });
+
+    // Validasi setelah dapat data
     if (!name || name.trim().length < 3) {
-      console.log("Name validation failed:", name);
       res
         .status(400)
         .json({ message: "Name must be at least 3 characters long" });
@@ -58,8 +53,6 @@ export const createProduct = async (
       image: imagePath,
       userId,
     });
-
-    console.log("Product created:", product);
 
     res.status(201).json({
       message: "Product created successfully",
