@@ -43,10 +43,10 @@ export default function ProductsPage() {
   };
 
   const getImageUrl = (path: string) => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-      "http://localhost:3001";
-    return `${baseUrl}${path}`;
+    if (process.env.NODE_ENV === "production") {
+      return `https://crud-test-app-7ec9ede8b1c6.herokuapp.com${path}`;
+    }
+    return `http://localhost:3001${path}`;
   };
 
   const handleDelete = async (id: number) => {
