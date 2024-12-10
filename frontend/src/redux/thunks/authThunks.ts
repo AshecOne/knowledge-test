@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthState, LoginCredentials, RegisterCredentials } from "@/types";
 import { authService } from "@/services/authService";
+import { setToken, removeToken } from "@/utils/auth";
 
 export const initializeAuth = createAsyncThunk(
   "auth/initialize",
@@ -18,8 +19,7 @@ export const login = createAsyncThunk(
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
-      localStorage.setItem("token", response.token);
-      document.cookie = `token=${response.token}; path=/`;
+      setToken(response.token);
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -65,7 +65,6 @@ export const updateProfile = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk("auth/logout", async () => {
-  localStorage.removeItem("token");
-  document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  removeToken();
   return null;
 });

@@ -1,3 +1,4 @@
+"use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,16 +10,18 @@ export function useAuth() {
   const dispatch = useDispatch<AppDispatch>();
   const { token, initialized } = useSelector((state: RootState) => state.auth);
 
-  const getTokenFromStorage = () => {
-    return (
-      localStorage.getItem("token") ||
-      document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="))
-        ?.split("=")[1] ||
-      null
-    );
-  };
+   const getTokenFromStorage = () => {
+     if (typeof window === "undefined") return null;
+
+     return (
+       localStorage.getItem("token") ||
+       document.cookie
+         .split("; ")
+         .find((row) => row.startsWith("token="))
+         ?.split("=")[1] ||
+       null
+     );
+   };
 
   useEffect(() => {
     if (!initialized) {
