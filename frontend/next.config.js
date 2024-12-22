@@ -4,6 +4,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "sprint-longitude-authority-rising.trycloudflare.com",
+        port: "",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
         hostname: "crud-test-app-7ec9ede8b1c6.herokuapp.com",
         port: "",
         pathname: "/uploads/**",
