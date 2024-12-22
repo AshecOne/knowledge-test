@@ -43,11 +43,11 @@ export default function ProductsPage() {
   };
 
   const getImageUrl = (path: string) => {
-    if (process.env.NODE_ENV === "production") {
-      return `https://crud-test-app-7ec9ede8b1c6.herokuapp.com${path}`;
-    }
-    return `http://localhost:3001${path}`;
-  };
+  if (process.env.NODE_ENV === "production") {
+    return `https://sprint-longitude-authority-rising.trycloudflare.com${path}`;
+  }
+  return `http://localhost:3001${path}`;
+};
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this product?")) {
