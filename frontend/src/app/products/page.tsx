@@ -44,7 +44,7 @@ export default function ProductsPage() {
 
   const getImageUrl = (path: string) => {
   if (process.env.NODE_ENV === "production") {
-    return `https://sprint-longitude-authority-rising.trycloudflare.com${path}`;
+    return `https://impressed-either-wiley-nt.trycloudflare.com${path}`;
   }
   return `http://localhost:3001${path}`;
 };
