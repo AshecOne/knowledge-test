@@ -44,7 +44,7 @@ export default function ProductsPage() {
 
   const getImageUrl = (path: string) => {
   if (process.env.NODE_ENV === "production") {
-    return `https://impressed-either-wiley-nt.trycloudflare.com${path}`;
+    return `https://poultry-studying-perfume-pm.trycloudflare.com${path}`;
   }
   return `http://localhost:3001${path}`;
 };
