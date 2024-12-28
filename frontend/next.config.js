@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "impressed-either-wiley-nt.trycloudflare.com",
+        hostname: "poultry-studying-perfume-pm.trycloudflare.com",
         port: "",
         pathname: "/uploads/**",
       },
