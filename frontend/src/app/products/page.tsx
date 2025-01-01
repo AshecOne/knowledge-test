@@ -44,7 +44,7 @@ export default function ProductsPage() {
 
   const getImageUrl = (path: string) => {
   if (process.env.NODE_ENV === "production") {
-    return `https://comparison-throws-worlds-apply.trycloudflare.com${path}`;
+    return `https://ecological-admitted-dallas-review.trycloudflare.com${path}`;
   }
   return `http://localhost:3001${path}`;
 };
